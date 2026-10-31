@@ -1,6 +1,6 @@
 {
   "name": "ai-assisted-portfolio-qa",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "AI-assisted delivery and QA case study: prompts with quality gates, acceptance specifications, a defect log and automated pre-publish checks.",
   "private": true,
   "scripts": {
@@ -20,6 +20,6 @@
   "license": "SEE LICENSE IN LICENSE",
   "author": "Alexandra Badescu",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   }
 }

@@ -3,19 +3,18 @@ __pycache__/
 *.pyc
 .DS_Store
 reports/
-# Generated fictional PDF fixtures are checked from source on CI.
-*.pdf
-# Original screenshots require a separate privacy review.
-screenshots/*.png
 
-# Keep unreviewed binary evidence and generated CV fixtures out of the public copy.
+# Generated fictional PDF fixtures are rebuilt from source in CI.
 *.pdf
+
+# Images and archives stay out unless reviewed; reviewed screenshots are allowed.
 *.png
 *.jpg
 *.jpeg
 *.webp
 *.gif
 *.zip
+!screenshots/*.png
 
 # Local secrets, credentials and keys.
 .env
