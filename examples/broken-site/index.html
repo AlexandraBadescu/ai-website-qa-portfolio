@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jordan Example · Sample site</title>
+<meta name="description" content="A fictional sample site for running the checks in this repo.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="/">Jordan Example</a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="notes/no-such-note">Notes</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#missing-section">Missing anchor</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <section id="about">
+    <div class="wrap">
+      <h1>A fictional QA engineer, for testing the checks</h1>
+      <p class="muted">Everything on this page is made up. It exists so you can run the site checks without supplying your own files.</p>
+    </div>
+  </section>
+  <section id="experience">
+    <div class="wrap">
+      <h2>Experience</h2>
+      <p>QA Engineer, Example Retail Ltd (2021 – present)</p>
+      <details>
+        <summary>More from this role</summary>
+        <p>Maintains API and end-to-end tests.</p>
+        <pre style="white-space:pre">this-line-is-deliberately-very-long-to-cause-horizontal-scrolling-on-small-screens-only-when-the-section-is-expanded</pre>
+        <img src="photo.png">
+      </details>
+    </div>
+  </section>
+  <section id="contact">
+    <div class="wrap">
+      <h2>Contact</h2>
+      <p>Read the <a href="/notes/release-checklist#no-such-heading">release checklist</a> or download the <a href="cv/missing.pdf">sample CV</a>.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

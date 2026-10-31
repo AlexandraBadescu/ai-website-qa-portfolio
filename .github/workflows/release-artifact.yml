@@ -1,0 +1,98 @@
+# PROPOSED: manually validate a trusted website build artifact uploaded to THIS repository.
+# Not wired to the website build/deploy process; requires artifact handoff and human sign-off.
+name: Verify website release artifact
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_run_id:
+        description: 'Run ID that uploaded the website ZIP artifact in THIS repository'
+        required: true
+        type: string
+      artifact_name:
+        description: 'Artifact name containing a ZIP of the static site files'
+        required: true
+        default: website-release
+        type: string
+      expected_sha256:
+        description: 'Full SHA-256 of the site ZIP inside the artifact (64 lowercase hex characters)'
+        required: true
+        type: string
+      cv_path:
+        description: 'Public CV path inside the unzipped website (relative path)'
+        required: true
+        default: cv/Alexandra_Badescu_CV.pdf
+        type: string
+permissions:
+  actions: read
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install checks
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          sudo apt-get update && sudo apt-get install -y poppler-utils
+          python -m pip install -r requirements.txt
+      - name: Download same-repository artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name }}
+          run-id: ${{ inputs.artifact_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: release-input
+      - name: Verify hash and unpack site
+        shell: bash
+        env:
+          EXPECTED: ${{ inputs.expected_sha256 }}
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED" =~ ^[a-f0-9]{64}$ ]] || { echo 'Expected full lowercase SHA-256'; exit 1; }
+          test "$(find release-input -maxdepth 1 -type f -name '*.zip' | wc -l)" -eq 1
+          ZIP=$(find release-input -maxdepth 1 -type f -name '*.zip' -print -quit)
+          printf '%s  %s\n' "$EXPECTED" "$ZIP" | sha256sum -c -
+          python3 - "$ZIP" <<'PY'
+          import pathlib, sys, zipfile
+          root = pathlib.Path('release-site').resolve()
+          root.mkdir()
+          with zipfile.ZipFile(sys.argv[1]) as archive:
+              for item in archive.infolist():
+                  destination = (root / item.filename).resolve()
+                  if not destination.is_relative_to(root):
+                      raise ValueError('Unsafe ZIP path: ' + item.filename)
+                  if (item.external_attr >> 16) & 0o170000 == 0o120000:
+                      raise ValueError('Symlinks not allowed in release ZIP')
+              archive.extractall(root)
+          PY
+          test -f release-site/index.html
+      - name: Check exact release files
+        shell: bash
+        env:
+          CV_PATH: ${{ inputs.cv_path }}
+        run: |
+          set -euo pipefail
+          node checks/site-checks.js release-site --report release-site-report.json
+          python3 - <<'PY'
+          import os, pathlib, subprocess
+          root=pathlib.Path('release-site').resolve()
+          cv=(root / os.environ['CV_PATH']).resolve()
+          if not cv.is_relative_to(root) or not cv.is_file() or cv.suffix.lower() != '.pdf':
+              raise SystemExit('Invalid or missing public CV path')
+          subprocess.run(['python3','-B','checks/cv-checks.py',str(cv)],check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: website-release-check-results
+          path: release-site-report.json
+          if-no-files-found: warn

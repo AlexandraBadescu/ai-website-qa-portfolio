@@ -1,0 +1,59 @@
+# © 2026 Alexandra Badescu. Licensed under CC BY-NC-ND 4.0 (see LICENSE).
+# Runs every test in tests/cases.json:
+#   - negative tests: each single-defect fixture must FAIL, with exactly the expected failure type
+#   - positive controls: valid input must PASS
+# Every test traces to a requirement: see docs/traceability.md.
+name: checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Audit complete Git history for exposed author emails
+        run: bash scripts/check-commit-email.sh
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          sudo apt-get update && sudo apt-get install -y poppler-utils
+          pip install -r requirements.txt
+
+      - name: Generate fictional example PDFs and test fixtures
+        run: |
+          npm run build:fixtures
+          node examples/src/make-cvs.js
+
+      - name: Run every requirement-based test (negative tests and positive controls)
+        run: npm run test:report
+
+      - name: Integration example (sample site must pass, broken site must fail)
+        run: |
+          node checks/site-checks.js examples/sample-site
+          if node checks/site-checks.js examples/broken-site; then echo "::error::The broken site passed"; exit 1; fi
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: test-results
+          path: reports/test-results.json

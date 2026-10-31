@@ -1,0 +1,25 @@
+{
+  "name": "ai-assisted-portfolio-qa",
+  "version": "1.2.0",
+  "description": "AI-assisted delivery and QA case study: prompts with quality gates, acceptance specifications, a defect log and automated pre-publish checks.",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "test:report": "node tests/run-tests.js --report reports/test-results.json && node tests/build-traceability.js",
+    "check:site": "node checks/site-checks.js",
+    "check:cv": "python3 -B checks/cv-checks.py",
+    "check:specs": "node checks/validate-specs.js",
+    "build:fixtures": "node tests/fixtures/build.js"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "playwright": "1.63.0",
+    "@cucumber/gherkin": "42.0.1",
+    "@cucumber/messages": "34.2.1"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Alexandra Badescu",
+  "engines": {
+    "node": ">=18"
+  }
+}

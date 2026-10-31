@@ -1,0 +1,86 @@
+# © 2026 Alexandra Badescu. Licensed under CC BY-NC-ND 4.0 (see LICENSE).
+name: Bug report
+description: Report a problem with the website or the checks
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Write the description in plain words, so anyone can follow it. Rate **affected users** and **severity** separately, then read the **service impact** from the [matrix](../blob/main/docs/bug-template.md#matrix).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What the problem is and who notices it, in one or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Where and how to reproduce
+      placeholder: |
+        Environment: device, screen width, browser, light or dark mode, version
+        Steps: 1. ... 2. ... 3. ...
+  - type: dropdown
+    id: users
+    attributes:
+      label: Affected users
+      description: Raise by one level for a critical or high-value group, and say why in the impact reasoning.
+      options:
+        - Low (under 1%, a niche setup)
+        - Medium (1-10%, one segment such as a role, device or browser)
+        - Large (10-25%, or most people on one key journey)
+        - Very large (over 25%, or everyone)
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: If a safe workaround exists, cap at Medium unless safety or compliance is involved.
+      options:
+        - Low (cosmetic, no loss of function)
+        - Medium (degraded or not blocking, usually with a workaround)
+        - High (major function broken, key journey blocked, or compliance risk such as failing WCAG AA)
+        - Very high (core journey impossible, data lost or exposed, or a safety or compliance risk with no workaround)
+    validations:
+      required: true
+  - type: textarea
+    id: reasoning
+    attributes:
+      label: Impact reasoning
+      description: One or two sentences explaining the two ratings.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Service impact (from the matrix in docs/bug-template.md)
+      options:
+        - Low (1 point)
+        - Medium (2 points)
+        - High (4 points)
+        - Very high (8 points)
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      placeholder: |
+        Possible root cause:
+        Recommended fix (if any):
+        Evidence (screenshots, logs, links):

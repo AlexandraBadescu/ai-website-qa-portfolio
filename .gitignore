@@ -1,0 +1,24 @@
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+reports/
+# Generated fictional PDF fixtures are checked from source on CI.
+*.pdf
+# Original screenshots require a separate privacy review.
+screenshots/*.png
+
+# Keep unreviewed binary evidence and generated CV fixtures out of the public copy.
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.zip
+
+# Local secrets, credentials and keys.
+.env
+.env.*
+*.pem
+*.key
