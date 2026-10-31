@@ -16,11 +16,14 @@
 //
 // Usage:  node checks/site-checks.js <site-folder> [--report report.json] [extra pages ...]
 // Example: node checks/site-checks.js examples/sample-site
-// Environment: A11Y_TAGS to change the standard, e.g. wcag2a,wcag2aa,wcag21a,wcag21aa (WCAG 2.1 AA).
+// Environment: A11Y_TAGS to change the standard, e.g. wcag2a,wcag2aa,wcag21a,wcag21aa (WCAG 2.1 AA);
+//              CHECK_CONCURRENCY for how many width/scheme combinations run at once (default 4).
+// Report: --report writes JSON with every result; accessibility failures include the axe rule,
+//         impact, help link and up to 5 affected elements.
 // Exit code: 1 if anything fails, so it can run in CI.
 //
-// What this does NOT cover: automated rules find only part of WCAG issues (see the
-// manual checklist in the README), external links are not requested, and pages
+// What this does NOT cover: automated rules find only part of WCAG issues (see
+// Limits in the README), external links are not requested, and pages
 // that nothing links to are only tested if listed on the command line.
 
 const http = require('http');
@@ -57,7 +60,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 
-server.listen(0, async () => {
+server.listen(0, '127.0.0.1', async () => {
   const base = `http://127.0.0.1:${server.address().port}`;
   const browser = await chromium.launch();
   const report = { standard: A11Y_TAGS, widths: WIDTHS, schemes: SCHEMES, pages: [], brokenLinks: [], results: [] };
@@ -106,35 +109,50 @@ server.listen(0, async () => {
   }
 
   // 3. Layout, accessibility and errors on every page, width and colour scheme.
-  for (const scheme of SCHEMES) {
-    for (const width of WIDTHS) {
-      const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: scheme });
-      const page = await context.newPage();
-      const errors = [];
-      page.on('pageerror', e => errors.push(e.message));
-      page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-      for (const pagePath of report.pages) {
-        errors.length = 0;
-        await page.goto(base + pagePath);
-        const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-        const before = await overflow();
-        await page.evaluate(() => document.querySelectorAll('details').forEach(d => { d.open = true; }));
-        const after = await overflow();
-        await page.addScriptTag({ content: axeSource });
-        const violations = await page.evaluate(async tags =>
-          (await axe.run(document, { runOnly: { type: 'tag', values: tags }, resultTypes: ['violations'] }))
-            .violations.map(v => `${v.id} (${v.nodes.length})`), A11Y_TAGS);
+  // Each width/scheme pair runs in its own browser context, CONCURRENCY at a time.
+  // Results are printed afterwards in a fixed order, so the output stays deterministic.
+  const CONCURRENCY = Number(process.env.CHECK_CONCURRENCY) || 4;
+  const combos = SCHEMES.flatMap(scheme => WIDTHS.map(width => ({ scheme, width })));
+  const byCombo = new Map();
+  async function checkCombo({ scheme, width }) {
+    const context = await browser.newContext({ viewport: { width, height: 900 }, colorScheme: scheme });
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+    const results = [];
+    for (const pagePath of report.pages) {
+      errors.length = 0;
+      await page.goto(base + pagePath);
+      const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      const before = await overflow();
+      await page.evaluate(() => document.querySelectorAll('details').forEach(d => { d.open = true; }));
+      const after = await overflow();
+      await page.addScriptTag({ content: axeSource });
+      const violations = await page.evaluate(async tags =>
+        (await axe.run(document, { runOnly: { type: 'tag', values: tags }, resultTypes: ['violations'] }))
+          .violations.map(v => ({ id: v.id, impact: v.impact, help: v.help, helpUrl: v.helpUrl, nodes: v.nodes.length, targets: v.nodes.slice(0, 5).map(n => n.target.join(' ')) })), A11Y_TAGS);
 
-        const problems = [];
-        if (before > 0) problems.push(`horizontal scroll ${before}px`);
-        if (after > 0 && after !== before) problems.push(`horizontal scroll ${after}px once sections are expanded`);
-        if (violations.length) problems.push(`WCAG: ${violations.join(', ')}`);
-        if (errors.length) problems.push(`errors: ${errors.join(' | ')}`);
-        const label = `${scheme.padEnd(5)} ${String(width).padStart(4)}px ${pagePath}`;
-        console.log(problems.length ? `FAIL ${label}  ${problems.join('; ')}` : `pass ${label}`);
-        report.results.push({ scheme, width, page: pagePath, pass: !problems.length, problems });
-      }
-      await context.close();
+      const problems = [];
+      if (before > 0) problems.push(`horizontal scroll ${before}px`);
+      if (after > 0 && after !== before) problems.push(`horizontal scroll ${after}px once sections are expanded`);
+      if (violations.length) problems.push(`WCAG: ${violations.map(v => `${v.id} (${v.nodes})`).join(', ')}`);
+      if (errors.length) problems.push(`errors: ${errors.join(' | ')}`);
+      // Full axe detail (rule, impact, help link, first 5 affected elements) goes in the JSON report.
+      results.push({ scheme, width, page: pagePath, pass: !problems.length, problems, ...(violations.length ? { accessibility: violations } : {}) });
+    }
+    await context.close();
+    byCombo.set(`${scheme}/${width}`, results);
+  }
+  const pending = [...combos];
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, combos.length) }, async () => {
+    while (pending.length) await checkCombo(pending.shift());
+  }));
+  for (const { scheme, width } of combos) {
+    for (const r of byCombo.get(`${scheme}/${width}`)) {
+      const label = `${scheme.padEnd(5)} ${String(width).padStart(4)}px ${r.page}`;
+      console.log(r.problems.length ? `FAIL ${label}  ${r.problems.join('; ')}` : `pass ${label}`);
+      report.results.push(r);
     }
   }
 
