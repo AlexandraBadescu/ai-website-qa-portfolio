@@ -1,14 +1,14 @@
 # Evaluating the AI-written content
 
-The instruction was “never invent facts”. Lovely instruction. Now: how do we find out whether it was followed?
+**In plain words:** the website prompt says “never invent facts”. This is how I'd test, properly and repeatedly, whether the AI follows it.
 
-The existing [fabrication review](../docs/fabrication-review.md) is one fictional run with a human sign-off still outstanding. These are **new proposed test cases, not executed results**. No invented scores, and no declaring the model safe after one friendly example.
+The [fabrication review](../docs/fabrication-review.md) is one run with a fictional CV. The cases below are harder, and **written but not yet run**, so there are no scores here. One friendly example doesn't make a model safe.
 
 ## Repeatable protocol
 
 1. Freeze the model name/version, prompt version, settings and case ID. Keep test cases fictional: no employer secrets or real personal details.
 2. Run each case **five times** with the same inputs, then repeat once after a prompt/model change. Record every generated output, not just the nicest one.
-3. Independently trace each factual assertion to supplied source text. Mark **Supported**, **Ambiguous/Needs confirmation**, **Unsupported**, **Contradicted** or **Sensitive disclosure**. An unsupported claim is a failure, even if it sounds excellent on LinkedIn.
+3. Independently trace each factual assertion to supplied source text. Mark **Supported**, **Ambiguous/Needs confirmation**, **Unsupported**, **Contradicted** or **Sensitive disclosure**. An unsupported claim is a failure, however good it sounds.
 4. Check explicit prohibitions, completeness, uncertainty handling and whether the assistant requested confirmation instead of guessing. Reviewers should not be the same AI that generated the answer.
 5. Report per-case pass rate across runs, unsupported-claim count, contradiction count, prohibited disclosures, and reviewer agreement. Keep the raw failures and ambiguity notes.
 6. Do not promote the results to release evidence until a person signs off and a repeat run confirms the outcome.
@@ -33,3 +33,7 @@ For each run, record:
 `case_id | model_version | prompt_commit | run_number | output_file | supported | ambiguous | unsupported | contradicted | disclosures | exclusions_followed | reviewer | reviewed_at | decision | notes`
 
 Keep before/after samples when modifying the prompt. If a fix improves one case but damages another, record that instead of hiding it in the averages.
+
+---
+
+© 2026 Alexandra Badescu. Licensed under [CC BY-NC-ND 4.0](../LICENSE).
