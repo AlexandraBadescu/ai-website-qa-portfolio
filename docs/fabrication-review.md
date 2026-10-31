@@ -1,6 +1,6 @@
 # Fabrication review: does "never invent facts" hold?
 
-**In plain words:** we told the AI "never invent facts". This page shows one real test of whether it listened. We gave it a fictional CV, looked at what it wrote, and checked every line against what it was actually told. It's evidence, not a guarantee.
+**In plain words:** I told the AI "never invent facts". This page shows one real test of whether it listened. I gave it a fictional CV, looked at what it wrote, and checked every line against what it was actually told. It's evidence, not a guarantee.
 
 A prompt instruction describes what the assistant **should** do. It doesn't prove it did. This page tests one rule of the [website prompt](../prompts/personal-website-prompt.md) in one real run: *"Never invent facts, numbers or stories… Don't upgrade what I said."*
 
@@ -67,9 +67,9 @@ Each output line was traced back to the input. **Upgraded** means the wording cl
 **Result for this run:**
 - 0 unsupported claims and 0 upgraded roles
 - 2 things the user excluded were correctly left out
-- 1 minor rewording flagged for the owner to check ("full regression run")
+- 1 minor rewording flagged for me to check ("full regression run")
 
-**Owner review:** _to be completed by the repo owner_: reviewed by ______ on ______, outcome ______.
+**My review:** reviewed by Alexandra Badescu on ______. Outcome: ______.
 
 ## 4. Limitations
 

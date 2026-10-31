@@ -1,6 +1,6 @@
 # The decisions behind the green ticks
 
-I wanted a website, not another full-time job. The AI assistant could do the coding, and I was perfectly happy to let it. But there's a small problem with letting AI build something and then asking the same AI whether it all works. It's a bit like asking a developer whether their code has bugs. Of course it works. Until it doesn't.
+I wanted a website, not another full-time job. The AI assistant could do the coding, and I was perfectly happy to let it. But there's a small problem with letting AI build something and then asking the same AI whether it all works. Nobody should be the only reviewer of their own work, and an AI is no exception. That's why teams have code review and a second pair of eyes in testing.
 
 So I started checking the checks. That's how I found a quality gate that could report success without actually testing anything. The interesting part wasn't just catching that bug. It was working out what would make the next green result worth trusting.
 
@@ -26,4 +26,8 @@ The public CV check was meant to catch phone numbers before I accidentally publi
 
 **For the recorded 30 October 2026 build:** the automated website checks and known-defect tests passed in the documented runs. That supported a go decision for those tested behaviours. It did **not** justify claiming a fresh manual accessibility audit, independently verified AI accuracy or continuous validation of the live URL. I'd make those limitations explicit and put an owner against each outstanding item.
 
-This was my own website, not a regulated production service or a team-led programme. The same approach transfers to bigger systems; the scale of the evidence here should not be overstated.
+This was my own website, not a regulated production service or a team programme, so the evidence is small. The habits are the ones I use at work: test the checks, keep limits visible, and make the release call explicit.
+
+---
+
+© 2026 Alexandra Badescu. Licensed under [CC BY-NC-ND 4.0](../LICENSE).

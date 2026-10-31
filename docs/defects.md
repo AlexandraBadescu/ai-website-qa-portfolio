@@ -58,7 +58,7 @@ The menu was one sideways-scrolling strip. "Approach", "Kind words", "Notes", "S
 - Root cause: the phone layout set the menu to scroll sideways (`overflow-x: auto`) instead of wrapping.
 - Fix applied: below 600px the menu becomes two rows of four.
 - Prevention: NR-S08 and the full width check in `site-checks.js`.
-- Evidence: *after screenshot withheld pending public privacy review*. Found by the owner on her own phone.
+- Evidence: [after](../screenshots/D01-mobile-menu-after.png). Found by me, on my own phone.
 
 **Status:** Fixed and verified
 
@@ -87,7 +87,7 @@ At 280px wide, "Experience" and "Kind words" were clipped. At 690px, the four co
 - Root cause: the D01 fix was only checked at standard phone widths, so this is a regression.
 - Fix applied: three columns at 340px and below, and a natural single row between 600 and 720px.
 - Prevention: folding-phone widths (280, 344 and 690px) are now part of every check.
-- Evidence: *after, all widths screenshot withheld pending public privacy review*
+- Evidence: [after, all widths](../screenshots/D02-foldable-menus-after.png)
 
 **Status:** Fixed and verified
 
@@ -116,7 +116,7 @@ Page 1 was 94% full and page 2 was 42% full.
 - Root cause: tight spacing on page 1, and no planned page break.
 - Fix applied: slightly larger text and spacing, and a page break between roles. When a later content change unbalanced the pages again, they were rebalanced and a "Selected writing" section was added.
 - Prevention: `cv-checks.py` fails a page with too little text or a large blank gap (NR-C07, NR-C08).
-- Evidence: *after screenshot withheld pending public privacy review*
+- Evidence: the page-fill figures above, from `cv-checks.py`. The screenshot stays private because it shows the whole CV.
 
 **Status:** Fixed and verified
 
@@ -144,7 +144,7 @@ The buttons floated next to the second and third paragraphs, with empty space ab
 **Notes**
 - Root cause: the layout aligned both columns to the bottom, which looked fine with short text but not with long text.
 - Fix applied: the heading spans the full width, both columns start at the first paragraph, and the buttons sit together in a card.
-- Evidence: *before screenshot withheld pending public privacy review* · *after screenshot withheld pending public privacy review*
+- Evidence: [before](../screenshots/D04-contact-before.png) · [after](../screenshots/D04-contact-after.png)
 
 **Status:** Fixed and verified
 
@@ -183,7 +183,7 @@ The site has no JavaScript, and its security settings block scripts. The JavaScr
 
 **Notes**
 - Resolution: run Lighthouse in an incognito window, where extensions are off. Earlier runs scored 99.
-- Evidence: *report with extensions screenshot withheld pending public privacy review*
+- Evidence: the scores above. The screenshot stays private because it shows browser details.
 
 **Status:** Not a defect: the result was distorted by browser extensions
 

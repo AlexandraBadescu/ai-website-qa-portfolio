@@ -1,13 +1,13 @@
 # Test report
 
-**In plain words:** on 30 October 2026, the live website and its downloadable CV passed every automated check, locally and in GitHub Actions. The checks were themselves tested against 38 requirements, and every one behaved as required. While testing the checks, we found and fixed 5 bugs in them, including one that would have let them pass without testing anything. The limits of what was proven are listed at the end.
+**In plain words:** on 30 October 2026, the files deployed to the live website, and its downloadable CV, passed every automated check in a local run. GitHub Actions runs the checks' own tests on every push, against fictional test sites, not the real site. The checks were themselves tested against 38 requirements, and every one behaved as required. While testing the checks, I found and fixed 5 bugs in them, including one that would have let them pass without testing anything. The limits of what was proven are listed at the end.
 
 | | |
 |---|---|
 | **Run date** | 30 October 2026 |
 | **Project version** | 1.2.0 |
 | **What was tested** | The production build of [alexandrabadescu.com](https://alexandrabadescu.com): the exact files deployed to Netlify at 19:45 on 30 October 2026 (SHA-256 starting `3f08d68bbc16`), plus the quality gate itself |
-| **Tools** | Playwright 1.63.0 (Chromium), axe-core 4.10.2, Node 20, Python 3, poppler-utils |
+| **Tools** | Playwright 1.63.0 (Chromium), axe-core 4.10.2, Node 20 for this run (CI now runs Node 22 and 24), Python 3.12, poppler-utils |
 | **Accessibility standard** | WCAG 2.2 Level AA |
 | **Screen sizes** | 280, 344, 390, 690, 768, 860, 1024 and 1280px, each in light and dark mode |
 
@@ -35,7 +35,7 @@
 
 ## 3. Clean-room test
 
-The project was unzipped into an empty folder and set up only as the README says, with no help from the author's machine.
+The project was unzipped into an empty folder and set up only as the README says, with nothing carried over from my own machine.
 
 - `npm ci` installed exact versions, with 0 known vulnerabilities.
 - `npm test`, and every README command, gave the documented result.
@@ -44,7 +44,21 @@ The project was unzipped into an empty folder and set up only as the README says
 
 ## 4. Continuous integration (GitHub Actions)
 
-The first run on GitHub, on 30 October 2026, passed: **38/38** tests behaved as required, the integration example behaved as expected (sample site passed, broken site failed) and the results file was uploaded. The run took about 3 minutes. The pipeline now runs on every push and pull request.
+CI runs the requirement-based tests and the integration example (sample site must pass, broken site must fail) on every push and pull request. It doesn't check the real website's files; that's the job of the [release workflow](release-evidence.md), which isn't connected to the website's build yet.
+
+In this repository, the first run, on 31 October 2026, passed in about 6 minutes: the commit email audit, **38/38** tests behaving as required, the integration example, and the results upload.
+
+### Update: version 1.3.0, 31 October 2026
+
+Changes to the checks themselves, so the full suite was run again:
+
+- The site checks now run four width and colour-mode combinations at a time, with output in a fixed order. Three runs on the broken example site gave byte-identical output.
+- Accessibility failures in the JSON report now include the axe rule, impact, help link and affected elements.
+- The local test server only listens on 127.0.0.1.
+- The project now requires Node 22 or later, and CI runs on Node 22 and 24.
+- The release workflow has a dry run on the fictional sample site, including a negative test that a wrong hash is rejected. Its steps were run locally in order, and all passed.
+
+Result locally on Node 22: **38/38** behaved as required, in 1 minute 21 seconds (down from 1 minute 59). The integration example behaved as expected.
 
 ## 5. Bugs found in the checks
 
@@ -64,16 +78,16 @@ All five are written up in full in the [bug log](defects.md#bugs-in-the-checks),
 
 | Rule | Evidence | Result |
 |---|---|---|
-| Never invent facts or upgrade wording | [Fabrication review](fabrication-review.md): one run with fictional input | 0 unsupported claims, 1 minor rewording flagged. **Owner sign-off pending.** |
+| Never invent facts or upgrade wording | [Fabrication review](fabrication-review.md): one run with fictional input | 0 unsupported claims, 1 minor rewording flagged. **My sign-off pending.** |
 | Never publish without an explicit "go" | Release history for this project | Followed in every release. This is a process record, not an automated test. |
 
 ## Outstanding limitations
 
-1. **Automated accessibility checks cover only part of WCAG 2.2 AA.** The manual checks in the README (keyboard, focus, zoom, text spacing, screen reader) weren't repeated for this report.
+1. **Automated accessibility checks cover only part of WCAG 2.2 AA.** The manual checks (keyboard, focus, zoom, text spacing, screen reader) weren't repeated for this report.
 2. **The checks ran on the deployed files, not by crawling the live URL.** The live stylesheet was spot-checked in a browser after deploy.
 3. **External links aren't checked**, for example LinkedIn. Pages nothing links to are only tested if listed.
 4. **The CV checks use heuristics.** Page fill doesn't judge design, extractable text doesn't prove ATS compatibility, and contact detection is pattern-based.
-5. **The fabrication review is a single run**, pre-filled by the same assistant that produced the output. It needs the owner's independent review, and more runs with harder inputs.
+5. **The fabrication review is a single run**, pre-filled by the same assistant that produced the output. It needs my independent review, and more runs with [harder inputs](../evals/README.md).
 6. **Only Chromium is automated.** Safari and Firefox were checked by hand on real devices.
 7. **Dark-mode share of users is an estimate.** D08's rating assumes 10–25% of visitors use dark mode. No analytics are collected, by design.
 
