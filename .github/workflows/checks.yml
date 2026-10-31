@@ -3,6 +3,7 @@
 #   - negative tests: each single-defect fixture must FAIL, with exactly the expected failure type
 #   - positive controls: valid input must PASS
 # Every test traces to a requirement: see docs/traceability.md.
+# Runs on both supported Node.js versions (package.json declares >=22).
 name: checks
 
 on:
@@ -14,6 +15,10 @@ jobs:
   checks:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -24,7 +29,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: ${{ matrix.node }}
           cache: npm
 
       - uses: actions/setup-python@v6
@@ -55,5 +60,5 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: test-results
+          name: test-results-node${{ matrix.node }}
           path: reports/test-results.json
