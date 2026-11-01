@@ -24,6 +24,7 @@ So I tested the checks themselves, with deliberately broken examples and valid e
 | Bugs | 15 investigated: 8 in the website, 5 in the checks, 2 that weren't bugs. All fixed, 0 open |
 | AI-written content | One test run, every line traced back to its source: 0 invented claims |
 | CI | Every push runs all the tests on Node 22 and 24; the release check has its own dry run |
+| Release 2 (1 Nov 2026) | A Projects section, a phone menu and shorter About: 64/64 checks, 66 links, menu tested at 10 widths and on a real iPhone, then deployed after my go ([record](docs/release-evidence.md#release-2-1-november-2026)) |
 
 What this does and doesn't prove is in [Limits](#limits), in one place.
 
