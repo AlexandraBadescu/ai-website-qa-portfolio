@@ -89,7 +89,7 @@ A negative test passes only when the check catches exactly the defect that was p
 
 - **Accessibility:** automated rules cover only part of WCAG 2.2 AA. Keyboard, focus, zoom, text spacing and screen-reader checks are manual, and weren't repeated for the 30 October report.
 - **Release link:** the real-site run used the deployed files, not a crawl of the live URL. The release workflow is tested with a dry run, but isn't connected to the website's build and deploy yet ([release evidence](docs/release-evidence.md)).
-- **AI claims:** "never invent facts" in a prompt is an instruction, not proof. The [fabrication review](docs/fabrication-review.md) is one run with a fictional CV, still awaiting my independent sign-off. Harder [evaluation cases](evals/README.md) are written but not yet run.
+- **AI claims:** "never invent facts" in a prompt is an instruction, not proof. The [fabrication review](docs/fabrication-review.md) is one run with a fictional CV, which I reviewed and signed off on 1 November 2026. Harder [evaluation cases](evals/README.md) are written but not yet run.
 - **Browsers:** Chromium is automated. Safari and Firefox were checked by hand.
 - **CV checks:** extractable text is needed for ATS parsing but doesn't guarantee it, and the contact and page-fill checks are heuristics.
 - **Estimates:** the share of dark-mode visitors and other user bands are assumptions for prioritising, not analytics. The site collects none, by design.
