@@ -7,6 +7,7 @@
 - **30 October 2026:** the test report records a local check of deployed website files and downloadable CV, with 64/64 page–width–scheme combinations passing.
 - The report references a SHA-256 **prefix** (`3f08d68bbc16`), not a full hash suitable for independent artifact verification.
 - GitHub Actions runs the requirement-based tests and integration examples on every push. It doesn't yet receive the production site build.
+- **1 November 2026 (Release 2):** the full release ZIP was checked before deploy (64/64, 66 links, 0 broken), its full SHA-256 was recorded, and the live pages were compared with it afterwards. See the [record below](#release-2-1-november-2026) and the [test report](test-report.md#7-release-2-website-update-1-november-2026).
 - The [release workflow](../.github/workflows/release-artifact.yml) is built and tested with a dry run on the fictional sample site: it verifies the ZIP's full SHA-256, rejects a wrong hash, unpacks the files safely and runs both checks on them.
 
 ## Release flow (steps 2 to 5 are built; 1 and 6 are next)
@@ -17,6 +18,19 @@
 4. Keep the JSON report, logs, hashes and manual-test evidence together as a named release bundle.
 5. A human reviews the results and limitations and explicitly approves or rejects the deploy. The automated job **does not grant approval**.
 6. After deployment, check the live URL and flag any difference between the published files and the verified ZIP. *(Next.)*
+
+## Release 2, 1 November 2026
+
+| Field | Value |
+|---|---|
+| Website source commit | Not applicable: the website isn't in Git yet; the release ZIP is the source of truth |
+| Full artifact SHA-256 | `80c7a831996b5f841595dd69c5fabacedfa6c74e010bca35166c40f3d665dde0` |
+| Deployed artifact / Netlify deploy ID | Netlify Drop, deploy `6ae73581da3d5050d0d8447b`, 1 November 2026 at 12:50 |
+| Automated release report | [Test report, section 7](test-report.md#7-release-2-website-update-1-november-2026): 64/64 site checks, menu tests at 10 widths |
+| Keyboard / screen-reader / zoom checks and tester | Menu checked on a real iPhone by Alexandra Badescu. Screen-reader and zoom checks: **Pending** |
+| Fabrication review signed by | Alexandra Badescu, 1 November 2026 |
+| Residual risks and decision | Safari is checked by hand only; Netlify adds a comment and a script to served pages (blocked by the security policy). **Go.** |
+| Approver and date | Alexandra Badescu, 1 November 2026 |
 
 ## Manual approval record (fill this in for each real release)
 

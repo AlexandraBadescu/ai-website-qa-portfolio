@@ -7,7 +7,7 @@
 1. **Connect the website's build to the release check.** The release workflow already verifies a ZIP's hash, unpacks it safely and checks the exact files, and its dry run proves that path works. The missing link is the website's own build uploading its ZIP, so every deploy is checked before I approve it.
 2. **Screenshots of failures.** Save a screenshot only when a check fails, named by page, width and colour mode, from the local test site so a screenshot can never include a private CV.
 3. **More browsers.** Add WebKit (Safari's engine) and Firefox to CI. WebKit in Playwright is close to Safari, not identical, so a real-device check stays in the release checklist.
-4. **Check the live site after deploy.** Crawl the public URL and compare it with the files that were checked, so any difference shows up straight away.
+4. **Check the live site after deploy.** Crawl the public URL and compare it with the files that were checked. Netlify adds a comment and a script to every page, so the comparison has to allow for those two additions (or they get switched off) and flag anything else that differs.
 5. **Release badges, once there's evidence behind them.** A badge should only reflect a current run on the actual release, never a stale or different one.
 
 ## Done

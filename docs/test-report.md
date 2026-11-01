@@ -81,6 +81,43 @@ All five are written up in full in the [bug log](defects.md#bugs-in-the-checks),
 | Never invent facts or upgrade wording | [Fabrication review](fabrication-review.md): one run with fictional input | 0 unsupported claims, 1 minor rewording flagged. **Signed off by me on 1 November 2026.** |
 | Never publish without an explicit "go" | Release history for this project | Followed in every release. This is a process record, not an automated test. |
 
+## 7. Release 2: website update, 1 November 2026
+
+The second release of the website, tested with the same gate before I said go.
+
+**What changed**
+
+- A **Projects** section near the top, linking the two public projects: this case study and [impact-led bug management](https://github.com/AlexandraBadescu/impact-led-bug-management).
+- A shorter About section, and a sixth story about the bug backlog.
+- Four headline figures instead of six, each linking to the evidence behind it.
+- On phones and tablets (1080px and narrower), the 9 section links sit behind a **Menu** button. It works without JavaScript: choosing a section closes the menu. The note pages use the same menu.
+
+**Results**
+
+| What | Result |
+|---|---|
+| Site checks on the release files | ✅ **64/64 passed**: 4 pages × 8 widths × 2 colour modes. **66** internal links and anchors checked, **0** broken. |
+| Menu tests, at 10 widths from 280 to 1440px | ✅ All passed: the menu opens and closes without moving the page, choosing a section closes it and lands below the header, every link is at least 44 × 44px, and nothing scrolls sideways |
+| Real iPhone, Safari | ✅ Checked by me: the menu opens, takes me to the section and closes |
+| Live site after deploy | ✅ Every line of the served pages matches the tested files, apart from two Netlify additions (see below). No console errors. |
+
+**Caught before release**
+
+- The first version of the menu made the note pages scroll sideways by 10 to 20px on phones, because they share the stylesheet but still had the old header. The gate failed 18 of 64 checks; the note pages now use the same menu.
+- At 280px, the Menu button pushed the header 17px past the edge of the screen. The brand and button are now smaller on folding-phone cover screens.
+
+The gate caught both, which is exactly what it's for. Neither reached the live site, so they aren't in the bug log.
+
+**Release record**
+
+| | |
+|---|---|
+| **Release file** | `alexandrabadescu-site-projects.zip`, SHA-256 `80c7a831996b5f841595dd69c5fabacedfa6c74e010bca35166c40f3d665dde0` |
+| **Deployed** | Netlify Drop, 1 November 2026 at 12:50, deploy `6ae73581da3d5050d0d8447b` |
+| **Decision** | Go, by me, after reviewing the results above |
+
+**New finding: the host changes the pages slightly.** Netlify adds a "hosted on Netlify" comment and a small Netlify script to every page it serves. The site's security policy blocks the script, and nothing visible changes, but the served files are no longer byte-for-byte the tested files. So "what's live is what was tested" needs either a comparison that allows for those two additions, or the additions switched off. It's on the [technical follow-ups](technical-follow-ups.md).
+
 ## Outstanding limitations
 
 1. **Automated accessibility checks cover only part of WCAG 2.2 AA.** The manual checks (keyboard, focus, zoom, text spacing, screen reader) weren't repeated for this report.
