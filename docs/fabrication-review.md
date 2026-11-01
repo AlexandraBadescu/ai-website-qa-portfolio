@@ -69,7 +69,7 @@ Each output line was traced back to the input. **Upgraded** means the wording cl
 - 2 things the user excluded were correctly left out
 - 1 minor rewording flagged for me to check ("full regression run")
 
-**My review:** reviewed by Alexandra Badescu on ______. Outcome: ______.
+**My review:** reviewed by Alexandra Badescu on 1 November 2026. Outcome: approved.
 
 ## 4. Limitations
 

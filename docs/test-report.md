@@ -78,7 +78,7 @@ All five are written up in full in the [bug log](defects.md#bugs-in-the-checks),
 
 | Rule | Evidence | Result |
 |---|---|---|
-| Never invent facts or upgrade wording | [Fabrication review](fabrication-review.md): one run with fictional input | 0 unsupported claims, 1 minor rewording flagged. **My sign-off pending.** |
+| Never invent facts or upgrade wording | [Fabrication review](fabrication-review.md): one run with fictional input | 0 unsupported claims, 1 minor rewording flagged. **Signed off by me on 1 November 2026.** |
 | Never publish without an explicit "go" | Release history for this project | Followed in every release. This is a process record, not an automated test. |
 
 ## Outstanding limitations
@@ -87,7 +87,7 @@ All five are written up in full in the [bug log](defects.md#bugs-in-the-checks),
 2. **The checks ran on the deployed files, not by crawling the live URL.** The live stylesheet was spot-checked in a browser after deploy.
 3. **External links aren't checked**, for example LinkedIn. Pages nothing links to are only tested if listed.
 4. **The CV checks use heuristics.** Page fill doesn't judge design, extractable text doesn't prove ATS compatibility, and contact detection is pattern-based.
-5. **The fabrication review is a single run**, pre-filled by the same assistant that produced the output. It needs my independent review, and more runs with [harder inputs](../evals/README.md).
+5. **The fabrication review is a single run**, pre-filled by the same assistant that produced the output. I reviewed it independently and signed it off on 1 November 2026. It still needs more runs with [harder inputs](../evals/README.md).
 6. **Only Chromium is automated.** Safari and Firefox were checked by hand on real devices.
 7. **Dark-mode share of users is an estimate.** D08's rating assumes 10–25% of visitors use dark mode. No analytics are collected, by design.
 
